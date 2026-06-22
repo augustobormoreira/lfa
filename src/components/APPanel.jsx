@@ -3,16 +3,6 @@ import { useAP } from '../hooks/useAP'
 import AutomatonViz from './AutomatonViz'
 import s from './Panel.module.css'
 
-/**
- * StackVisual — Visualização da pilha como coluna de blocos.
- *
- * Mostra cada símbolo como um bloco empilhado de cima para baixo.
- * O topo da pilha (índice 0) aparece no topo visual.
- *
- * Cores:
- *   '$' = cinza (fundo de pilha, sempre lá)
- *   outros = amarelo (símbolos empilhados pelo autômato)
- */
 function StackVisual({ stack }) {
   return (
     <div style={{
@@ -53,9 +43,6 @@ function StackVisual({ stack }) {
   )
 }
 
-/**
- * APPanel — Interface da Parte 2: Autômato com Pilha.
- */
 export default function APPanel() {
   const ap = useAP()
   const [newState, setNewState]       = useState('')
@@ -65,20 +52,8 @@ export default function APPanel() {
   const [stepIndex, setStepIndex]     = useState(-1)
   const [nt, setNt] = useState({ from: 'q0', sym: 'a', top: '$', next: 'q0', push: 'A$' })
 
-  /**
-   * localRows — espelho editável das transições do AP.
-   *
-   * Cada linha da tabela tem inputs livres para nextState e push.
-   * O mesmo padrão do AFDPanel:
-   *   - onChange → atualiza o estado local livremente (não trava a digitação)
-   *   - onBlur   → só grava no hook quando o campo perde o foco
-   *
-   * Formato: { "estado,símbolo,topo": { nextState, push } }
-   */
   const [localRows, setLocalRows] = useState({})
 
-  // Sincroniza localRows sempre que as transições do hook mudarem
-  // (ex: ao adicionar ou remover uma transição)
   useEffect(() => {
     const copy = {}
     Object.entries(ap.transitions).forEach(([k, v]) => {
@@ -87,7 +62,6 @@ export default function APPanel() {
     setLocalRows(copy)
   }, [ap.transitions])
 
-  // Atualiza um campo de uma linha específica no estado local
   const setLocalField = (key, field, value) => {
     setLocalRows(prev => ({
       ...prev,
@@ -95,8 +69,6 @@ export default function APPanel() {
     }))
   }
 
-  // Salva a linha no hook ao sair do campo (onBlur)
-  // nextState deve ser um estado existente para ser salvo
   const commitRow = (key) => {
     const row = localRows[key]
     if (!row) return
@@ -135,7 +107,6 @@ export default function APPanel() {
   return (
     <div className={s.layout}>
 
-      {/* ── PAINEL ESQUERDO ── */}
       <div className={s.left}>
 
         {/* Estados */}
@@ -245,7 +216,6 @@ export default function APPanel() {
         </section>
       </div>
 
-      {/* ── PAINEL DIREITO ── */}
       <div className={s.right}>
 
         {/* Diagrama */}
@@ -263,7 +233,6 @@ export default function APPanel() {
           </div>
         </section>
 
-        {/* Tabela de transições — editável inline */}
         <section className={s.section}>
           <label>TRANSIÇÕES</label>
           <div className={s.tableWrap}>
@@ -283,7 +252,6 @@ export default function APPanel() {
                   const [from, sym, top] = key.split(',')
                   const local = localRows[key] || { nextState: val.nextState, push: val.push }
 
-                  // nextState inválido = digitou algo que não é estado existente
                   const nextInvalid = local.nextState !== '' && !ap.states.includes(local.nextState)
 
                   return (
@@ -293,7 +261,6 @@ export default function APPanel() {
                       <td>{sym}</td>
                       <td>{top}</td>
 
-                      {/* Campo editável: próximo estado */}
                       <td>
                         <input
                           type="text"
@@ -307,7 +274,6 @@ export default function APPanel() {
                         />
                       </td>
 
-                      {/* Campo editável: push — qualquer string é válida */}
                       <td>
                         <input
                           type="text"
@@ -330,7 +296,6 @@ export default function APPanel() {
           </div>
         </section>
 
-        {/* Trace */}
         {result && result.trace.length > 0 && (
           <section className={s.section}>
             <label>TRACE</label>
