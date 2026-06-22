@@ -1,0 +1,68 @@
+.app {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.subtitle {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Abas */
+.tabs {
+  display: flex;
+  gap: 0;
+}
+
+.tab {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border: 1px solid var(--rule);
+  color: var(--muted);
+  background: none;
+}
+.tab:first-child { border-right: none; }
+.tab:hover { color: var(--ink); }
+
+.tabActive {
+  color: var(--blue) !important;
+  border-color: var(--blue) !important;
+  background: var(--blue-bg) !important;
+}
+
+.main {
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

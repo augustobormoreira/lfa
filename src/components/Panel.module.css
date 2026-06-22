@@ -1,0 +1,198 @@
+/* Layout de duas colunas separadas por linha */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  min-height: 600px;
+}
+@media (max-width: 720px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+.left {
+  border-right: 1px solid var(--rule);
+  padding-right: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.right {
+  padding-left: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* Seção */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Linha inline */
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+.row input { flex: 1; }
+
+/* Fila de botões */
+.btnRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+/* Hint */
+.hint {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* Teoria */
+.theory {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.theory code {
+  background: var(--blue-bg);
+  color: var(--blue);
+  padding: 1px 5px;
+  font-size: 11px;
+}
+
+/* Botões de estado */
+.states {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.stateBtn {
+  padding: 3px 10px;
+  font-size: 12px;
+  border: 1px solid var(--rule);
+  color: var(--muted);
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+}
+.stateBtn:hover { color: var(--ink); border-color: var(--ink); }
+.stateBtnInit  { color: var(--blue);  border-color: var(--blue);  background: var(--blue-bg); }
+.stateBtnFinal { color: var(--green); border-color: var(--green); background: var(--green-bg); }
+.stateBtnActive { color: var(--blue); border-color: var(--blue);  background: var(--blue-bg); }
+.arrow { opacity: 0.6; }
+.star  { opacity: 0.7; }
+
+/* Resultado */
+.accepted {
+  margin-top: 6px;
+  padding: 6px 10px;
+  color: var(--green);
+  background: var(--green-bg);
+  border-left: 2px solid var(--green);
+  font-size: 13px;
+}
+.rejected {
+  margin-top: 6px;
+  padding: 6px 10px;
+  color: var(--red);
+  background: var(--red-bg);
+  border-left: 2px solid var(--red);
+  font-size: 13px;
+}
+
+/* Visualização SVG */
+.viz {
+  border: 1px solid var(--rule);
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  padding: 8px;
+}
+
+/* Trace */
+.trace {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.traceRow {
+  font-size: 11px;
+  padding: 4px 8px;
+  color: var(--muted);
+  border-left: 2px solid var(--rule);
+}
+.traceCur { color: var(--blue);  border-left-color: var(--blue);  background: var(--blue-bg); }
+.traceAcc { color: var(--green); border-left-color: var(--green); background: var(--green-bg); }
+.traceRej { color: var(--red);   border-left-color: var(--red);   background: var(--red-bg); }
+
+/* Tabela */
+.tableWrap { overflow-x: auto; }
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.table th {
+  text-align: left;
+  padding: 5px 8px;
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--rule);
+  font-weight: 400;
+}
+.table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+}
+.table tr:last-child td { border-bottom: none; }
+.stateCell { color: var(--muted); font-weight: 500; }
+.rowHl td  { background: var(--blue-bg); }
+
+/* Grid do formulário de transição AP */
+.transGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px 12px;
+}
+@media (max-width: 500px) {
+  .transGrid { grid-template-columns: 1fr 1fr; }
+}
+
+/* Pilha */
+.stack {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 6px 8px;
+  border: 1px solid var(--rule);
+  min-height: 34px;
+}
+.stackItem {
+  padding: 2px 8px;
+  border: 1px solid #DDAA44;
+  color: #996600;
+  background: #FFFBF0;
+  font-size: 12px;
+  font-weight: 500;
+}
+.stackEmpty {
+  font-size: 11px;
+  color: var(--muted);
+  font-style: italic;
+}

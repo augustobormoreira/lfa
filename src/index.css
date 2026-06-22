@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --paper:   #F7F7F5;
+  --ink:     #111111;
+  --muted:   #888888;
+  --rule:    #DDDDDD;
+  --blue:    #2563EB;
+  --blue-bg: #EFF4FF;
+  --green:   #16A34A;
+  --green-bg:#F0FDF4;
+  --red:     #DC2626;
+  --red-bg:  #FEF2F2;
+
+  --font: 'IBM Plex Mono', 'Courier New', monospace;
+  --size-sm: 11px;
+  --size-md: 13px;
+  --size-lg: 15px;
+}
+
+html, body {
+  font-family: var(--font);
+  font-size: var(--size-md);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Elementos base ── */
+input[type="text"], select {
+  font-family: var(--font);
+  font-size: var(--size-md);
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  padding: 4px 0;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s;
+}
+input[type="text"]:focus,
+select:focus {
+  border-bottom-color: var(--blue);
+}
+select {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  padding-right: 18px;
+}
+
+button {
+  font-family: var(--font);
+  font-size: var(--size-sm);
+  font-weight: 500;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--rule);
+  padding: 5px 12px;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: color 0.12s, border-color 0.12s;
+}
+button:hover { color: var(--ink); border-color: var(--ink); }
+button:disabled { opacity: 0.35; cursor: default; }
+button:disabled:hover { color: var(--muted); border-color: var(--rule); }
+
+button.primary {
+  color: var(--blue);
+  border-color: var(--blue);
+}
+button.primary:hover {
+  background: var(--blue-bg);
+}
+
+button.ghost {
+  border: none;
+  color: var(--muted);
+  padding: 4px 6px;
+}
+button.ghost:hover { color: var(--red); border: none; }
+
+label {
+  font-size: var(--size-sm);
+  color: var(--muted);
+  display: block;
+  margin-bottom: 3px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--rule); }
