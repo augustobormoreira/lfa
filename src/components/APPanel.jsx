@@ -261,7 +261,6 @@ export default function APPanel() {
               type="ap"
             />
           </div>
-          <p className={s.hint}>label: símbolo,topo→push</p>
         </section>
 
         {/* Tabela de transições — editável inline */}
@@ -329,9 +328,6 @@ export default function APPanel() {
               </tbody>
             </table>
           </div>
-          <p className={s.hint}>
-            edite → estado e push diretamente · Tab/clique fora para confirmar · vermelho = estado inválido
-          </p>
         </section>
 
         {/* Trace */}
@@ -355,13 +351,6 @@ export default function APPanel() {
           </section>
         )}
 
-        <section className={s.section}>
-          <label>LINGUAGEM RECONHECIDA</label>
-          <p className={s.theory}>
-            L = {'{ aⁿbⁿ | n ≥ 1 }'}<br/>
-            Experimente: <code>ab</code> ✓ &nbsp; <code>aabb</code> ✓ &nbsp; <code>aab</code> ✗
-          </p>
-        </section>
       </div>
     </div>
   )
