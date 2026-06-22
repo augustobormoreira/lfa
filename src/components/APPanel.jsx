@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAP } from '../hooks/useAP'
 import AutomatonViz from './AutomatonViz'
 import s from './Panel.module.css'
@@ -6,42 +6,28 @@ import s from './Panel.module.css'
 /**
  * StackVisual — Visualização da pilha como coluna de blocos.
  *
- * Mostra cada símbolo como um bloco empilhado de baixo para cima.
+ * Mostra cada símbolo como um bloco empilhado de cima para baixo.
  * O topo da pilha (índice 0) aparece no topo visual.
- * Se a pilha estiver vazia (apenas ['$'] ou []), mostra "VAZIA".
  *
- * A lógica de cores:
+ * Cores:
  *   '$' = cinza (fundo de pilha, sempre lá)
- *   'A','B', etc. = amarelo (símbolos empilhados pelo autômato)
+ *   outros = amarelo (símbolos empilhados pelo autômato)
  */
 function StackVisual({ stack }) {
-  // Pilha "vazia" = só tem o marcador de fundo '$', ou está realmente vazia
-  const isEmpty = stack.length === 0 || (stack.length === 1 && stack[0] === '$' && false)
-  // Exibimos de baixo para cima: invertemos o array para renderizar fundo embaixo
-  const visual = [...stack].reverse()
-
   return (
     <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-      gap: '2px',
-      padding: '8px',
-      border: '1px solid var(--rule)',
-      minHeight: '48px',
-      width: '100%',
+      display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+      gap: '2px', padding: '8px', border: '1px solid var(--rule)',
+      minHeight: '48px', width: '100%',
     }}>
-      {/* Label de topo */}
       {stack.length > 0 && (
         <div style={{ fontSize: '10px', color: 'var(--muted)', marginBottom: '4px', letterSpacing: '0.06em' }}>
           ← TOPO
         </div>
       )}
-
       {stack.length === 0 ? (
         <span style={{ fontSize: '12px', color: 'var(--muted)', fontStyle: 'italic' }}>VAZIA</span>
       ) : (
-        // Renderiza do topo para baixo (índice 0 = topo = aparece primeiro)
         stack.map((sym, i) => {
           const isBottom = sym === '$'
           return (
@@ -50,19 +36,14 @@ function StackVisual({ stack }) {
               border: `1px solid ${isBottom ? '#ccc' : '#DDAA44'}`,
               background: isBottom ? '#f5f5f5' : '#FFFBF0',
               color: isBottom ? '#888' : '#996600',
-              fontSize: '13px',
-              fontWeight: '500',
-              minWidth: '36px',
-              textAlign: 'center',
-              width: '48px',
+              fontSize: '13px', fontWeight: '500',
+              minWidth: '36px', textAlign: 'center', width: '48px',
             }}>
               {sym}
             </div>
           )
         })
       )}
-
-      {/* Label de fundo */}
       {stack.length > 0 && (
         <div style={{ fontSize: '10px', color: 'var(--muted)', marginTop: '4px', letterSpacing: '0.06em' }}>
           ← FUNDO
@@ -77,12 +58,53 @@ function StackVisual({ stack }) {
  */
 export default function APPanel() {
   const ap = useAP()
-  const [newState, setNewState]   = useState('')
-  const [testInput, setTestInput] = useState('aaabbb')
-  const [result, setResult]       = useState(null)
+  const [newState, setNewState]       = useState('')
+  const [testInput, setTestInput]     = useState('aaabbb')
+  const [result, setResult]           = useState(null)
   const [activeState, setActiveState] = useState(null)
-  const [stepIndex, setStepIndex] = useState(-1)
-  const [nt, setNt] = useState({ from:'q0', sym:'a', top:'$', next:'q0', push:'A$' })
+  const [stepIndex, setStepIndex]     = useState(-1)
+  const [nt, setNt] = useState({ from: 'q0', sym: 'a', top: '$', next: 'q0', push: 'A$' })
+
+  /**
+   * localRows — espelho editável das transições do AP.
+   *
+   * Cada linha da tabela tem inputs livres para nextState e push.
+   * O mesmo padrão do AFDPanel:
+   *   - onChange → atualiza o estado local livremente (não trava a digitação)
+   *   - onBlur   → só grava no hook quando o campo perde o foco
+   *
+   * Formato: { "estado,símbolo,topo": { nextState, push } }
+   */
+  const [localRows, setLocalRows] = useState({})
+
+  // Sincroniza localRows sempre que as transições do hook mudarem
+  // (ex: ao adicionar ou remover uma transição)
+  useEffect(() => {
+    const copy = {}
+    Object.entries(ap.transitions).forEach(([k, v]) => {
+      copy[k] = { nextState: v.nextState, push: v.push }
+    })
+    setLocalRows(copy)
+  }, [ap.transitions])
+
+  // Atualiza um campo de uma linha específica no estado local
+  const setLocalField = (key, field, value) => {
+    setLocalRows(prev => ({
+      ...prev,
+      [key]: { ...prev[key], [field]: value },
+    }))
+  }
+
+  // Salva a linha no hook ao sair do campo (onBlur)
+  // nextState deve ser um estado existente para ser salvo
+  const commitRow = (key) => {
+    const row = localRows[key]
+    if (!row) return
+    const [from, sym, top] = key.split(',')
+    if (ap.states.includes(row.nextState)) {
+      ap.setTransition(from, sym, top, row.nextState, row.push)
+    }
+  }
 
   const handleTest = () => {
     const r = ap.testWord(testInput)
@@ -159,32 +181,32 @@ export default function APPanel() {
           <div className={s.transGrid}>
             <div>
               <label>de</label>
-              <select value={nt.from} onChange={e => setNt(t => ({...t, from: e.target.value}))}>
+              <select value={nt.from} onChange={e => setNt(t => ({ ...t, from: e.target.value }))}>
                 {ap.states.map(st => <option key={st} value={st}>{st}</option>)}
               </select>
             </div>
             <div>
               <label>símbolo</label>
               <input type="text" value={nt.sym}
-                onChange={e => setNt(t => ({...t, sym: e.target.value}))}
+                onChange={e => setNt(t => ({ ...t, sym: e.target.value }))}
                 placeholder="a / ε" />
             </div>
             <div>
               <label>topo pilha</label>
               <input type="text" value={nt.top}
-                onChange={e => setNt(t => ({...t, top: e.target.value}))}
+                onChange={e => setNt(t => ({ ...t, top: e.target.value }))}
                 placeholder="$" />
             </div>
             <div>
               <label>para</label>
-              <select value={nt.next} onChange={e => setNt(t => ({...t, next: e.target.value}))}>
+              <select value={nt.next} onChange={e => setNt(t => ({ ...t, next: e.target.value }))}>
                 {ap.states.map(st => <option key={st} value={st}>{st}</option>)}
               </select>
             </div>
             <div>
               <label>push (vazio=pop)</label>
               <input type="text" value={nt.push}
-                onChange={e => setNt(t => ({...t, push: e.target.value}))}
+                onChange={e => setNt(t => ({ ...t, push: e.target.value }))}
                 placeholder="A$" />
             </div>
           </div>
@@ -214,7 +236,6 @@ export default function APPanel() {
               {result.accepted ? `✓ aceita` : `✗ rejeitada`}
             </div>
           )}
-          {/* Pilha visual — sempre visível após executar */}
           {result && (
             <div style={{ marginTop: '10px' }}>
               <label>PILHA</label>
@@ -240,30 +261,67 @@ export default function APPanel() {
               type="ap"
             />
           </div>
+          <p className={s.hint}>label: símbolo,topo→push</p>
         </section>
 
-        {/* Tabela de transições */}
+        {/* Tabela de transições — editável inline */}
         <section className={s.section}>
           <label>TRANSIÇÕES</label>
           <div className={s.tableWrap}>
             <table className={s.table}>
               <thead>
                 <tr>
-                  <th>estado</th><th>símbolo</th><th>topo</th>
-                  <th>→ estado</th><th>push</th><th></th>
+                  <th>estado</th>
+                  <th>símbolo</th>
+                  <th>topo</th>
+                  <th>→ estado</th>
+                  <th>push</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 {Object.entries(ap.transitions).map(([key, val]) => {
                   const [from, sym, top] = key.split(',')
+                  const local = localRows[key] || { nextState: val.nextState, push: val.push }
+
+                  // nextState inválido = digitou algo que não é estado existente
+                  const nextInvalid = local.nextState !== '' && !ap.states.includes(local.nextState)
+
                   return (
                     <tr key={key} className={from === activeState ? s.rowHl : ''}>
-                      <td>{from}</td><td>{sym}</td><td>{top}</td>
-                      <td>{val.nextState}</td>
-                      <td>{val.push || 'ε'}</td>
+                      {/* Campos somente-leitura: são a "chave" da transição */}
+                      <td style={{ color: 'var(--muted)', fontWeight: 500 }}>{from}</td>
+                      <td>{sym}</td>
+                      <td>{top}</td>
+
+                      {/* Campo editável: próximo estado */}
                       <td>
-                        <button className="ghost"
-                          onClick={() => ap.removeTransition(key)}>✕</button>
+                        <input
+                          type="text"
+                          value={local.nextState}
+                          onChange={e => setLocalField(key, 'nextState', e.target.value)}
+                          onBlur={() => commitRow(key)}
+                          style={{
+                            width: '52px',
+                            color: nextInvalid ? 'var(--red)' : undefined,
+                          }}
+                        />
+                      </td>
+
+                      {/* Campo editável: push — qualquer string é válida */}
+                      <td>
+                        <input
+                          type="text"
+                          value={local.push}
+                          onChange={e => setLocalField(key, 'push', e.target.value)}
+                          onBlur={() => commitRow(key)}
+                          placeholder="ε"
+                          style={{ width: '52px' }}
+                        />
+                      </td>
+
+                      <td>
+                        <button className="ghost" onClick={() => ap.removeTransition(key)}>✕</button>
                       </td>
                     </tr>
                   )
@@ -271,6 +329,9 @@ export default function APPanel() {
               </tbody>
             </table>
           </div>
+          <p className={s.hint}>
+            edite → estado e push diretamente · Tab/clique fora para confirmar · vermelho = estado inválido
+          </p>
         </section>
 
         {/* Trace */}
@@ -294,7 +355,13 @@ export default function APPanel() {
           </section>
         )}
 
-        
+        <section className={s.section}>
+          <label>LINGUAGEM RECONHECIDA</label>
+          <p className={s.theory}>
+            L = {'{ aⁿbⁿ | n ≥ 1 }'}<br/>
+            Experimente: <code>ab</code> ✓ &nbsp; <code>aabb</code> ✓ &nbsp; <code>aab</code> ✗
+          </p>
+        </section>
       </div>
     </div>
   )
