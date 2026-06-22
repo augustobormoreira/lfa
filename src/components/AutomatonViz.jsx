@@ -1,13 +1,6 @@
 import React, { useMemo } from 'react'
 
-/**
- * AutomatonViz — Diagrama SVG do autômato.
- *
- * Estados distribuídos em círculo.
- * Setas curvas quando há transição bidirecional.
- * Self-loops acima do nó.
- * Estado ativo destacado durante simulação.
- */
+
 export default function AutomatonViz({
   states, transitions, initialState, finalStates, activeState, type = 'afd',
 }) {
@@ -16,7 +9,6 @@ export default function AutomatonViz({
   const R = 105   // raio do círculo de distribuição
   const NR = 22   // raio dos nós
 
-  // Posições dos estados em círculo
   const pos = useMemo(() => {
     const p = {}
     states.forEach((s, i) => {
@@ -26,7 +18,6 @@ export default function AutomatonViz({
     return p
   }, [states])
 
-  // Agrupa transições por par (from→to) para unir labels
   const groups = useMemo(() => {
     const g = {}
     Object.entries(transitions).forEach(([key, val]) => {
@@ -68,7 +59,6 @@ export default function AutomatonViz({
         ))}
       </defs>
 
-      {/* Setas de transição */}
       {Object.values(groups).map(({ from, to, labels }) => {
         const p1 = pos[from], p2 = pos[to]
         if (!p1 || !p2) return null
@@ -78,7 +68,6 @@ export default function AutomatonViz({
         const stroke = isAct ? BLUE : MUTED
         const arrow = isAct ? 'url(#arr-active)' : 'url(#arr)'
 
-        // Self-loop
         if (from === to) {
           const lx = p1.x, ly = p1.y - NR
           return (
@@ -121,7 +110,6 @@ export default function AutomatonViz({
         )
       })}
 
-      {/* Nós dos estados */}
       {states.map(s => {
         const p = pos[s]
         if (!p) return null
