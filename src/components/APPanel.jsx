@@ -240,7 +240,6 @@ export default function APPanel() {
               type="ap"
             />
           </div>
-          <p className={s.hint}>label: símbolo,topo→push</p>
         </section>
 
         {/* Tabela de transições */}
@@ -295,13 +294,7 @@ export default function APPanel() {
           </section>
         )}
 
-        <section className={s.section}>
-          <label>LINGUAGEM RECONHECIDA</label>
-          <p className={s.theory}>
-            L = {'{ aⁿbⁿ | n ≥ 1 }'}<br/>
-            Experimente: <code>ab</code> ✓ &nbsp; <code>aabb</code> ✓ &nbsp; <code>aab</code> ✗
-          </p>
-        </section>
+        
       </div>
     </div>
   )
