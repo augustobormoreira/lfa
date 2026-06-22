@@ -3,13 +3,7 @@ import { useAFD } from '../hooks/useAFD'
 import AutomatonViz from './AutomatonViz'
 import s from './Panel.module.css'
 
-/**
- * AFDPanel — Interface da Parte 1: Autômato Finito Determinístico.
- *
- * Layout: duas colunas separadas por linha vertical.
- *   Esquerda  → controles (estados, alfabeto, teste)
- *   Direita   → diagrama + trace
- */
+
 export default function AFDPanel() {
   const afd = useAFD()
   const [newState, setNewState]   = useState('')
@@ -18,21 +12,9 @@ export default function AFDPanel() {
   const [activeState, setActiveState] = useState(null)
   const [stepIndex, setStepIndex] = useState(-1)
 
-  /**
-   * localTrans — espelho local da tabela de transições.
-   *
-   * Problema anterior: o input era 100% controlado pelo hook (value=transitions[key]).
-   * Isso impedia digitar valores intermediários como "q" antes de completar "q1",
-   * porque "q" não é um estado válido e o onChange ignorava.
-   *
-   * Solução: mantemos um estado local { "from,sym": valorDigitado } que atualiza
-   * livremente enquanto o usuário digita. Só gravamos no hook (via setTransition)
-   * quando o campo perde o foco (onBlur) e o valor é um estado válido.
-   */
   const [localTrans, setLocalTrans] = useState({})
 
-  // Sincroniza localTrans sempre que as transições do hook mudarem
-  // (ex: quando um estado é removido e as transições somem)
+
   useEffect(() => {
     const copy = {}
     Object.entries(afd.transitions).forEach(([k, v]) => { copy[k] = v })
@@ -63,7 +45,6 @@ export default function AFDPanel() {
   return (
     <div className={s.layout}>
 
-      {/* ── PAINEL ESQUERDO ── */}
       <div className={s.left}>
 
         {/* Estados */}
@@ -101,7 +82,6 @@ export default function AFDPanel() {
           </div>
         </section>
 
-        {/* Estado inicial */}
         <section className={s.section}>
           <label>ESTADO INICIAL</label>
           <select value={afd.initialState} onChange={e => afd.setInitialState(e.target.value)}>
@@ -109,7 +89,6 @@ export default function AFDPanel() {
           </select>
         </section>
 
-        {/* Alfabeto */}
         <section className={s.section}>
           <label>ALFABETO Σ</label>
           <input
@@ -122,7 +101,6 @@ export default function AFDPanel() {
           />
         </section>
 
-        {/* Testar palavra */}
         <section className={s.section}>
           <label>TESTAR PALAVRA</label>
           <input
@@ -147,7 +125,6 @@ export default function AFDPanel() {
           )}
         </section>
 
-        {/* Tabela de transições */}
         <section className={s.section}>
           <label>TABELA DE TRANSIÇÕES δ</label>
           <div className={s.tableWrap}>
@@ -167,9 +144,7 @@ export default function AFDPanel() {
                     </td>
                     {afd.alphabet.map(sym => {
                       const key = `${from},${sym}`
-                      // Valor exibido: local (permite digitar livremente)
                       const displayVal = key in localTrans ? localTrans[key] : ''
-                      // Cor vermelha se o valor digitado não é um estado válido
                       const isInvalid = displayVal !== '' && !afd.states.includes(displayVal)
                       return (
                         <td key={sym}>
@@ -177,11 +152,9 @@ export default function AFDPanel() {
                             type="text"
                             value={displayVal}
                             onChange={e => {
-                              // Atualiza local livremente durante digitação
                               setLocalTrans(prev => ({ ...prev, [key]: e.target.value }))
                             }}
                             onBlur={e => {
-                              // Só grava no hook ao sair do campo, se for estado válido
                               const v = e.target.value.trim()
                               if (afd.states.includes(v)) {
                                 afd.setTransition(from, sym, v)
@@ -206,10 +179,8 @@ export default function AFDPanel() {
         </section>
       </div>
 
-      {/* ── PAINEL DIREITO ── */}
       <div className={s.right}>
 
-        {/* Diagrama */}
         <section className={s.section}>
           <label>DIAGRAMA</label>
           <div className={s.viz}>
