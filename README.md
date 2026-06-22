@@ -4,7 +4,10 @@ Trabalho Prático de Linguagens Formais e Autômatos implementando:
 - **Parte 1:** Autômato Finito Determinístico (AFD)
 - **Parte 2:** Autômato com Pilha (AP / PDA)
 
-## Como rodar
+## Acesso pelo GH-Pages
+[Clique aqui!](https://augustobormoreira.github.io/lfa/)
+
+## Como rodar localmente
 
 ### Pré-requisitos
 - Node.js 18+ instalado
