@@ -1,6 +1,6 @@
 # Autômatos Finitos — Trabalho Prático IFTM
 
-Trabalho Prático de Teoria da Computação implementando:
+Trabalho Prático de Linguagens Formais e Autômatos implementando:
 - **Parte 1:** Autômato Finito Determinístico (AFD)
 - **Parte 2:** Autômato com Pilha (AP / PDA)
 
