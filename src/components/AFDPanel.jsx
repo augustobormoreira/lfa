@@ -120,7 +120,6 @@ export default function AFDPanel() {
             )}
             placeholder="a,b"
           />
-          <p className={s.hint}>símbolos separados por vírgula</p>
         </section>
 
         {/* Testar palavra */}
@@ -204,7 +203,6 @@ export default function AFDPanel() {
               </tbody>
             </table>
           </div>
-          <p className={s.hint}>edite e pressione Tab/Enter para confirmar · vermelho = estado inválido</p>
         </section>
       </div>
 
@@ -224,7 +222,6 @@ export default function AFDPanel() {
               type="afd"
             />
           </div>
-          <p className={s.hint}>→ inicial &nbsp;·&nbsp; * final &nbsp;·&nbsp; estado azul = atual</p>
         </section>
 
         {/* Trace */}
@@ -246,14 +243,7 @@ export default function AFDPanel() {
           </section>
         )}
 
-        {/* Nota teórica */}
-        <section className={s.section}>
-          <label>LINGUAGEM RECONHECIDA</label>
-          <p className={s.theory}>
-            L = {'{ w ∈ {a,b}* | w contém "aa" }'}<br/>
-            Experimente: <code>aab</code> ✓ &nbsp; <code>bab</code> ✗ &nbsp; <code>baab</code> ✓
-          </p>
-        </section>
+      
       </div>
     </div>
   )
